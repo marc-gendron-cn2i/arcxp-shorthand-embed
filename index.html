@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embed Bouton Shorthand</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 1rem;
+      max-width: 600px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="url"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      box-sizing: border-box;
+    }
+    .color-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .color-group input[type="color"] {
+      width: 40px;
+      height: 40px;
+      border: none;
+      padding: 0;
+    }
+    .color-group input[type="text"] {
+      width: 100px;
+    }
+    button {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Configurer le bouton Shorthand</h2>
+
+  <label>URL du lien :
+    <input id="link" type="url" placeholder="https://votreshorthand.com/story" />
+  </label>
+
+  <label>Texte du bouton :
+    <input id="text" type="text" placeholder="Voir le contenu" />
+  </label>
+
+  <label>Couleur du bouton :
+    <div class="color-group">
+      <input id="bgcolor" type="color" value="#D51D2C" />
+      <input id="bgcolor-hex" type="text" value="#D51D2C" />
+    </div>
+  </label>
+
+  <label>Couleur du texte :
+    <div class="color-group">
+      <input id="textcolor" type="color" value="#FFFFFF" />
+      <input id="textcolor-hex" type="text" value="#FFFFFF" />
+    </div>
+  </label>
+
+  <button id="submitBtn">Ajouter</button>
+
+  <script>
+    function syncColors() {
+      const bgColor = document.getElementById('bgcolor');
+      const bgHex = document.getElementById('bgcolor-hex');
+      bgColor.addEventListener('input', () => bgHex.value = bgColor.value);
+      bgHex.addEventListener('input', () => bgColor.value = bgHex.value);
+
+      const textColor = document.getElementById('textcolor');
+      const textHex = document.getElementById('textcolor-hex');
+      textColor.addEventListener('input', () => textHex.value = textColor.value);
+      textHex.addEventListener('input', () => textColor.value = textColor.value);
+    }
+
+    window.addEventListener('DOMContentLoaded', syncColors);
+
+    function submitToComposer() {
+      const link = document.getElementById('link').value;
+      const text = document.getElementById('text').value || 'Voir le contenu';
+      const bgColor = document.getElementById('bgcolor').value;
+      const textColor = document.getElementById('textcolor').value;
+
+      const html = `
+<div style="width: 100%; max-width: 700px; margin: 2rem auto; text-align: center;">
+  <a href="${link}" target="_blank" rel="noopener noreferrer" style="
+    background-color: ${bgColor};
+    color: ${textColor};
+    padding: 1rem 2rem;
+    font-size: 18px;
+    font-family: 'Red Hat Display', sans-serif;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-block;
+  ">
+    ${text}
+  </a>
+</div>`.trim();
+
+      alert('✅ Envoi du bloc HTML vers Arc XP Composer...');
+      console.log('📤 postMessage envoyé :', html);
+
+      window.parent.postMessage({
+        source: 'composer-embed',
+        action: 'insert',
+        payload: {
+          type: 'custom_embed',
+          subtype: 'shorthand-button',
+          fields: { raw_html: html }
+        }
+      }, '*');
+    }
+  
+    document.getElementById('submitBtn').addEventListener('click', submitToComposer);
+    </script>
+</body>
+</html>

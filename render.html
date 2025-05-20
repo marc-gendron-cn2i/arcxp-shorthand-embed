@@ -1,62 +1,61 @@
-<!DOCTYPE html>\
-<html>\
-<head>\
-  <meta charset="UTF-8">\
-  <title>Shorthand Button</title>\
-  <style>\
-    .shorthand-container \{\
-      display: flex;\
-      justify-content: center;\
-      align-items: center;\
-      padding: 40px 0;\
-      position: relative;\
-    \}\
-\
-    .shorthand-button \{\
-      padding: 12px 24px;\
-      border: none;\
-      font-size: 18px;\
-      cursor: pointer;\
-      text-align: center;\
-      border-radius: 4px;\
-    \}\
-\
-    .close-btn \{\
-      position: absolute;\
-      top: 10px;\
-      right: 10px;\
-      font-size: 18px;\
-      cursor: pointer;\
-      background: transparent;\
-      border: none;\
-    \}\
-\
-    @media only screen and (max-width: 768px) \{\
-      .shorthand-button \{\
-        font-size: 16px;\
-        padding: 10px 20px;\
-      \}\
-    \}\
-  </style>\
-</head>\
-<body>\
-  <div class="shorthand-container" id="shorthandEmbed">\
-    <button class="close-btn" onclick="document.getElementById('shorthandEmbed').style.display='none'">\uc0\u10005 </button>\
-    <button id="shorthandBtn" class="shorthand-button"></button>\
-  </div>\
-\
-  <script>\
-    const config = window.PowerUp.embed.config;\
-\
-    const btn = document.getElementById('shorthandBtn');\
-    btn.textContent = config.buttonText || 'Read Story';\
-    btn.style.backgroundColor = config.bgColor || '#000';\
-    btn.style.color = config.textColor || '#fff';\
-\
-    btn.onclick = () => \{\
-      window.open(config.shorthandUrl, '_blank');\
-    \};\
-  </script>\
-</body>\
-</html>\
-}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Shorthand Button</title>
+  <style>
+    .shorthand-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 0;
+      position: relative;
+    }
+
+    .shorthand-button {
+      padding: 12px 24px;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      text-align: center;
+      border-radius: 4px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+    }
+
+    @media only screen and (max-width: 768px) {
+      .shorthand-button {
+        font-size: 16px;
+        padding: 10px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shorthand-container" id="shorthandEmbed">
+    <button class="close-btn" onclick="document.getElementById('shorthandEmbed').style.display='none'">✕</button>
+    <button id="shorthandBtn" class="shorthand-button"></button>
+  </div>
+
+  <script>
+    const config = window.PowerUp.embed.config;
+
+    const btn = document.getElementById('shorthandBtn');
+    btn.textContent = config.buttonText || 'Lire';
+    btn.style.backgroundColor = config.bgColor || '#000';
+    btn.style.color = config.textColor || '#fff';
+
+    btn.onclick = () => {
+      window.open(config.shorthandUrl, '_blank');
+    };
+  </script>
+</body>
+</html>

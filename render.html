@@ -3,16 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Bouton Shorthand</title>
-
-  <!-- Import Red Hat Display -->
   <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet">
-
   <style>
     body {
       margin: 0;
       font-family: 'Red Hat Display', sans-serif;
     }
-
     .shorthand-container {
       display: flex;
       justify-content: center;
@@ -20,7 +16,6 @@
       padding: 40px 0;
       position: relative;
     }
-
     .shorthand-button {
       padding: 12px 24px;
       border: none;
@@ -30,7 +25,6 @@
       border-radius: 4px;
       font-family: 'Red Hat Display', sans-serif;
     }
-
     .close-btn {
       position: absolute;
       top: 10px;
@@ -40,7 +34,6 @@
       background: transparent;
       border: none;
     }
-
     @media only screen and (max-width: 768px) {
       .shorthand-button {
         font-size: 16px;
@@ -57,13 +50,13 @@
   </div>
 
   <script>
-    // 1. Récupère la clé "k" dans l'URL (Arc utilise ça pour suivre l'instance)
+    // Lire la clé k dans l'URL
     function getKeyFromUrl() {
       const params = new URLSearchParams(window.location.search);
       return params.get("k") || "";
     }
 
-    // 2. Envoie un message postMessage à Arc Composer
+    // Envoyer un message à Arc Composer
     function sendMessage(action, data) {
       window.parent.postMessage(
         JSON.stringify({
@@ -76,7 +69,6 @@
       );
     }
 
-    // 3. Récupération des paramètres injectés par Arc
     const config = window.PowerUp?.embed?.config || {};
 
     const btn = document.getElementById('shorthandBtn');
@@ -84,7 +76,6 @@
     btn.style.backgroundColor = config.bgColor || '#D51D2C';
     btn.style.color = config.textColor || '#FFFFFF';
 
-    // 4. Clic sur le bouton : envoyer à Arc (Composer ou app mobile)
     btn.onclick = () => {
       if (config.shorthandUrl) {
         sendMessage("click", {
@@ -93,14 +84,12 @@
           config
         });
       } else {
-        alert('Aucune URL Shorthand fournie.');
+        alert("Aucune URL Shorthand définie.");
       }
     };
 
-    // 5. Envoie la hauteur de l'embed à Arc
     window.addEventListener("load", () => {
-      const height = document.body.scrollHeight;
-      sendMessage("height", { height });
+      sendMessage("height", { height: document.body.scrollHeight });
     });
   </script>
 

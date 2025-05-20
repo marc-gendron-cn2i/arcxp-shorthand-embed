@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>Shorthand Button View</title>
+  <!-- ✅ Load Composer SDK -->
+  <script src="https://composer-tools.arc-cdn.net/core/arc-composer-sdk-v1.js"></script>
   <style>
     .shorthand-button {
       display: flex;
@@ -22,18 +25,19 @@
   <div class="shorthand-button" id="button-container"></div>
 
   <script>
-    const render = (config) => {
+    addEventListenerForMessage('data', (incoming) => {
+      const config = incoming?.config || {};
       const container = document.getElementById('button-container');
+
       const button = document.createElement('a');
-      button.href = config.url;
+      button.href = config.url || '#';
       button.target = '_blank';
       button.innerText = config.btn_text || 'Lire la suite';
       button.style.backgroundColor = config.btn_color || '#D51D2C';
       button.style.color = config.text_color || '#FFFFFF';
-      container.appendChild(button);
-    };
 
-    render(data.config);
+      container.appendChild(button);
+    });
   </script>
 </body>
 </html>

@@ -2,24 +2,24 @@
 <html>
 <head>
   <title>Edit Shorthand Embed</title>
+  <script src="https://composer-tools.arc-cdn.net/core/arc-composer-sdk-v1.js"></script>
   <style>
     body {
       font-family: 'Red Hat Display', sans-serif;
       padding: 16px;
     }
+
     label {
       display: block;
       margin-bottom: 10px;
     }
+
     input[type="text"] {
       width: 100%;
       padding: 8px;
       margin-top: 4px;
     }
   </style>
-
-  <!-- ✅ ADD THIS: Load Arc XP Composer SDK -->
-  <script src="https://composer-tools.arc-cdn.net/core/arc-composer-sdk-v1.js"></script>
 </head>
 <body>
   <h2>Shorthand Story Button</h2>
@@ -46,34 +46,36 @@
     <input type="text" id="text_color_code" value="#FFFFFF" />
   </label>
 
-  <button onclick="applyChanges()">Apply</button>
+  <button id="apply_btn">Apply</button>
 
   <script>
-    window.onload = () => {
-      const config = data?.config || {};
+    // ✅ Composer SDK wrapper to safely receive and send data
+    addEventListenerForMessage('data', (incoming) => {
+      const config = incoming?.config || {};
+
       document.getElementById('btn_text').value = config.btn_text || 'Lire la suite';
       document.getElementById('url').value = config.url || '';
       document.getElementById('btn_color').value = config.btn_color || '#D51D2C';
       document.getElementById('btn_color_code').value = config.btn_color || '#D51D2C';
       document.getElementById('text_color').value = config.text_color || '#FFFFFF';
       document.getElementById('text_color_code').value = config.text_color || '#FFFFFF';
-    };
 
-    const applyChanges = () => {
-      const config = {
-        btn_text: document.getElementById('btn_text').value,
-        url: document.getElementById('url').value,
-        btn_color: document.getElementById('btn_color_code').value,
-        text_color: document.getElementById('text_color_code').value
-      };
+      // ✅ Attach apply button AFTER Composer SDK is ready
+      document.getElementById('apply_btn').addEventListener('click', () => {
+        const config = {
+          btn_text: document.getElementById('btn_text').value,
+          url: document.getElementById('url').value,
+          btn_color: document.getElementById('btn_color_code').value,
+          text_color: document.getElementById('text_color_code').value
+        };
 
-      sendMessage('data', {
-        id: config.url,
-        url: config.url,
-        config
+        sendMessage('data', {
+          id: config.url,
+          url: config.url,
+          config
+        });
       });
-    };
+    });
   </script>
 </body>
 </html>
-

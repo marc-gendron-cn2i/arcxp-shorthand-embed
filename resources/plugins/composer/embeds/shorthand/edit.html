@@ -7,30 +7,31 @@
       font-family: 'Red Hat Display', sans-serif;
       padding: 16px;
     }
-
     label {
       display: block;
       margin-bottom: 10px;
     }
-
     input[type="text"] {
       width: 100%;
       padding: 8px;
       margin-top: 4px;
     }
   </style>
+
+  <!-- ✅ ADD THIS: Load Arc XP Composer SDK -->
+  <script src="https://composer-tools.arc-cdn.net/core/arc-composer-sdk-v1.js"></script>
 </head>
 <body>
   <h2>Shorthand Story Button</h2>
 
   <label>
     Button Text:
-    <input type="text" id="btn_text" value="Découvrir le contenu" />
+    <input type="text" id="btn_text" value="Lire la suite" />
   </label>
 
   <label>
     Shorthand URL:
-    <input type="text" id="url" placeholder="https://immersif.lescoops.ca/votre-contenu-shorthand..." />
+    <input type="text" id="url" placeholder="https://..." />
   </label>
 
   <label>
@@ -45,7 +46,7 @@
     <input type="text" id="text_color_code" value="#FFFFFF" />
   </label>
 
-  <button onclick="applyChanges()">Ajouter</button>
+  <button onclick="applyChanges()">Apply</button>
 
   <script>
     window.onload = () => {
@@ -75,3 +76,4 @@
   </script>
 </body>
 </html>
+

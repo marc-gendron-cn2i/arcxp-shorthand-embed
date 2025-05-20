@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>Edit Shorthand Embed</title>
-  <script src="https://composer-tools.arc-cdn.net/core/arc-composer-sdk-v1.js"></script>
   <style>
     body {
       font-family: 'Red Hat Display', sans-serif;
@@ -48,34 +47,55 @@
 
   <button id="apply_btn">Apply</button>
 
+  <!-- ✅ Load Composer SDK dynamically and wait for it -->
   <script>
-    // ✅ Composer SDK wrapper to safely receive and send data
-    addEventListenerForMessage('data', (incoming) => {
-      const config = incoming?.config || {};
+    const loadComposerSdk = () => {
+      const script = document.createElement('script');
+      script.src = 'https://composer-tools.arc-cdn.net/core/arc-composer-sdk-v1.js';
+      script.onload = () => {
+        // ✅ SDK is ready
+        if (typeof addEventListenerForMessage === 'function') {
+          initComposerEmbed();
+        } else {
+          console.error('Composer SDK loaded, but functions are missing.');
+        }
+      };
+      script.onerror = () => {
+        console.error('Failed to load Composer SDK.');
+      };
+      document.head.appendChild(script);
+    };
 
-      document.getElementById('btn_text').value = config.btn_text || 'Lire la suite';
-      document.getElementById('url').value = config.url || '';
-      document.getElementById('btn_color').value = config.btn_color || '#D51D2C';
-      document.getElementById('btn_color_code').value = config.btn_color || '#D51D2C';
-      document.getElementById('text_color').value = config.text_color || '#FFFFFF';
-      document.getElementById('text_color_code').value = config.text_color || '#FFFFFF';
+    const initComposerEmbed = () => {
+      addEventListenerForMessage('data', (incoming) => {
+        const config = incoming?.config || {};
 
-      // ✅ Attach apply button AFTER Composer SDK is ready
-      document.getElementById('apply_btn').addEventListener('click', () => {
-        const config = {
-          btn_text: document.getElementById('btn_text').value,
-          url: document.getElementById('url').value,
-          btn_color: document.getElementById('btn_color_code').value,
-          text_color: document.getElementById('text_color_code').value
-        };
+        document.getElementById('btn_text').value = config.btn_text || 'Lire la suite';
+        document.getElementById('url').value = config.url || '';
+        document.getElementById('btn_color').value = config.btn_color || '#D51D2C';
+        document.getElementById('btn_color_code').value = config.btn_color || '#D51D2C';
+        document.getElementById('text_color').value = config.text_color || '#FFFFFF';
+        document.getElementById('text_color_code').value = config.text_color || '#FFFFFF';
 
-        sendMessage('data', {
-          id: config.url,
-          url: config.url,
-          config
+        document.getElementById('apply_btn').addEventListener('click', () => {
+          const config = {
+            btn_text: document.getElementById('btn_text').value,
+            url: document.getElementById('url').value,
+            btn_color: document.getElementById('btn_color_code').value,
+            text_color: document.getElementById('text_color_code').value
+          };
+
+          sendMessage('data', {
+            id: config.url,
+            url: config.url,
+            config
+          });
         });
       });
-    });
+    };
+
+    // ✅ Start by loading Composer SDK
+    loadComposerSdk();
   </script>
 </body>
 </html>

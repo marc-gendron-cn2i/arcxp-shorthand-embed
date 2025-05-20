@@ -1,1 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Shorthand Embed</title>
+  <style>
+    body {
+      font-family: 'Red Hat Display', sans-serif;
+      padding: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Shorthand Story Button</h2>
+  <label>
+    Button Text:
+    <input type="text" id="btn_text" />
+  </label>
+  <label>
+    Shorthand URL:
+    <input type="text" id="url" />
+  </label>
+  <label>
+    Button Color:
+    <input type="color" id="btn_color" />
+    <input type="text" id="btn_color_code" placeholder="#D51D2C" />
+  </label>
+  <label>
+    Text Color:
+    <input type="color" id="text_color" />
+    <input type="text" id="text_color_code" placeholder="#FFFFFF" />
+  </label>
+  <button onclick="applyChanges()">Apply</button>
+
+  <script>
+    window.onload = () => {
+      const config = data?.config || {};
+      document.getElementById('btn_text').value = config.btn_text || 'Lire la suite';
+      document.getElementById('url').value = config.url || '';
+      document.getElementById('btn_color').value = config.btn_color || '#D51D2C';
+      document.getElementById('btn_color_code').value = config.btn_color || '#D51D2C';
+      document.getElementById('text_color').value = config.text_color || '#FFFFFF';
+      document.getElementById('text_color_code').value = config.text_color || '#FFFFFF';
+    };
+
+    const applyChanges = () => {
+      const config = {
+        btn_text: document.getElementById('btn_text').value,
+        url: document.getElementById('url').value,
+        btn_color: document.getElementById('btn_color_code').value,
+        text_color: document.getElementById('text_color_code').value
+      };
+
+      sendMessage('data', {
+        id: config.url,
+        url: config.url,
+        config
+      });
+    };
+  </script>
+</body>
+</html>
 

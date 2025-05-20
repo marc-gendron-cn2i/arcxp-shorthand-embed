@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Test PowerUp Embed</title>
+  <script>
+    // Simulate Arc Composer config injection BEFORE render.html loads
+    window.PowerUp = {
+      embed: {
+        config: {
+          shorthandUrl: "https://immersif.lescoops.ca/0e81cd11-9e1c-44db-b517-6418f3ffe4d4/index.html",
+          buttonText: "Découvrir la réponse.",
+          bgColor: "#D51D2C",
+          textColor: "#FFFFFF"
+        }
+      }
+    };
+  </script>
+</head>
+<body style="margin:0;padding:0;">
+  <iframe src="render.html" width="100%" height="300" style="border:0;"></iframe>
+</body>
+</html>
+

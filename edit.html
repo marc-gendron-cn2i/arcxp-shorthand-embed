@@ -2,11 +2,10 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Configurer le bouton Shorthand</title>
-  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet">
+  <title>Insérer un bouton Shorthand</title>
   <style>
     body {
-      font-family: 'Red Hat Display', sans-serif;
+      font-family: system-ui, sans-serif;
       padding: 40px;
       max-width: 600px;
       margin: auto;
@@ -14,10 +13,22 @@
       color: #333;
     }
 
+    h1 {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
     label {
       display: block;
       margin: 16px 0 8px;
-      font-weight: 700;
+      font-weight: bold;
+    }
+
+    input[type="text"], input[type="color"] {
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
     }
 
     .color-field {
@@ -26,70 +37,65 @@
       align-items: center;
     }
 
-    input[type="text"], input[type="color"] {
-      font-family: 'Red Hat Display', sans-serif;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
+    .color-field input[type="color"] {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      cursor: pointer;
+      flex-shrink: 0;
+      border: none;
     }
 
-    input[type="text"] {
+    .color-field input[type="text"] {
+      flex: 1;
+      padding: 10px;
+    }
+
+    input[type="text"]:not(.color-hex) {
       width: 100%;
       padding: 10px;
     }
 
-    input[type="color"] {
-      width: 44px;
-      height: 44px;
-      padding: 0;
-    }
-
-    .info-note {
-      font-size: 14px;
-      color: #666;
+    button {
       margin-top: 24px;
-    }
-
-    .fake-button {
-      margin-top: 12px;
       padding: 12px 24px;
       background-color: #007bff;
       color: white;
       border: none;
       border-radius: 4px;
       font-size: 16px;
-      cursor: not-allowed;
-      opacity: 0.6;
-      font-family: 'Red Hat Display', sans-serif;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
 
+  <h1>Insérer un bouton Shorthand</h1>
+
   <label for="url">URL du lien :</label>
-  <input type="text" id="url" data-field="shorthandUrl" placeholder="https://votreshorthand.com/story" required>
+  <input type="text" data-field="shorthandUrl" id="url" placeholder="https://votreshorthand.com/story" required>
 
   <label for="text">Texte du bouton :</label>
-  <input type="text" id="text" data-field="buttonText" placeholder="Voir le contenu">
+  <input type="text" data-field="buttonText" id="text" placeholder="Voir le contenu">
 
-  <label>Couleur du bouton :</label>
+  <label for="bgColor">Couleur du bouton :</label>
   <div class="color-field">
     <input type="color" id="bgColorPicker" value="#D51D2C">
-    <input type="text" id="bgColorHex" data-field="bgColor" value="#D51D2C">
+    <input type="text" id="bgColorHex" value="#D51D2C">
   </div>
 
-  <label>Couleur du texte :</label>
+  <label for="textColor">Couleur du texte :</label>
   <div class="color-field">
     <input type="color" id="textColorPicker" value="#FFFFFF">
-    <input type="text" id="textColorHex" data-field="textColor" value="#FFFFFF">
+    <input type="text" id="textColorHex" value="#FFFFFF">
   </div>
 
-  <p class="info-note">
-    Cliquez sur <strong>Insérer</strong> en haut à droite pour ajouter ce bouton à l’article.
-  </p>
-
-  <button type="button" class="fake-button" disabled>Ajouter</button>
+  <button type="button">Ajouter</button>
 
   <script>
     // Sync background color picker and hex field
@@ -103,6 +109,13 @@
     const textColorHex = document.getElementById('textColorHex');
     textColorPicker.oninput = () => textColorHex.value = textColorPicker.value;
     textColorHex.oninput = () => textColorPicker.value = textColorHex.value;
+
+    // Map synced values to Arc data fields
+    document.querySelector('[data-field="bgColor"]')?.remove();
+    document.querySelector('[data-field="textColor"]')?.remove();
+
+    bgColorHex.setAttribute('data-field', 'bgColor');
+    textColorHex.setAttribute('data-field', 'textColor');
   </script>
 
 </body>

@@ -1,12 +1,41 @@
-{
-  "custom_embed_type": "shorthand-button",
-  "display_name": "Bouton Shorthand",
-  "schema": {
-    "fields": {
-      "html": {
-        "type": "string",
-        "description": "Bloc HTML \u00e0 ins\u00e9rer"
-      }
-    }
-  }
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \{\
+  "name": "Shorthand Embed Button",\
+  "description": "Add a button linking to a Shorthand story",\
+  "version": "1.0.0",\
+  "edit": "public/edit.html",\
+  "render": "public/render.html",\
+  "inputs": [\
+    \{\
+      "label": "Shorthand URL",\
+      "name": "shorthandUrl",\
+      "type": "text",\
+      "required": true\
+    \},\
+    \{\
+      "label": "Button Text",\
+      "name": "buttonText",\
+      "type": "text",\
+      "defaultValue": "Read Story"\
+    \},\
+    \{\
+      "label": "Background Color",\
+      "name": "bgColor",\
+      "type": "color",\
+      "defaultValue": "#000000"\
+    \},\
+    \{\
+      "label": "Text Color",\
+      "name": "textColor",\
+      "type": "color",\
+      "defaultValue": "#FFFFFF"\
+    \}\
+  ]\
+\}\
 }

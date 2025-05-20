@@ -1,73 +1,46 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Shorthand Button</title>
-  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Red Hat Display', sans-serif;
+<script>
+  // Récupérer la clé ?k= utilisée pour identifier l'instance de l'embed
+  function getKeyFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("k") || "";
+  }
+
+  // Fonction pour envoyer des messages à Arc Composer
+  function sendMessage(action, data) {
+    window.parent.postMessage(
+      JSON.stringify({
+        source: "custom_embed",
+        action,
+        data,
+        key: getKeyFromUrl()
+      }),
+      "*"
+    );
+  }
+
+  const config = window.PowerUp?.embed?.config || {};
+
+  const btn = document.getElementById('shorthandBtn');
+  btn.textContent = config.buttonText || 'Voir le contenu';
+  btn.style.backgroundColor = config.bgColor || '#D51D2C';
+  btn.style.color = config.textColor || '#FFFFFF';
+
+  // Envoyer un message au parent au clic sur le bouton
+  btn.onclick = () => {
+    if (config.shorthandUrl) {
+      sendMessage("click", {
+        id: "shorthand-button",
+        url: config.shorthandUrl,
+        config
+      });
+    } else {
+      alert('Aucune URL Shorthand fournie.');
     }
+  };
 
-    .shorthand-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 40px 0;
-      position: relative;
-    }
-
-    .shorthand-button {
-      padding: 12px 24px;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-      text-align: center;
-      border-radius: 4px;
-      font-family: 'Red Hat Display', sans-serif;
-    }
-
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 18px;
-      cursor: pointer;
-      background: transparent;
-      border: none;
-    }
-
-    @media only screen and (max-width: 768px) {
-      .shorthand-button {
-        font-size: 16px;
-        padding: 10px 20px;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="shorthand-container" id="shorthandEmbed">
-    <button class="close-btn" onclick="document.getElementById('shorthandEmbed').style.display='none'">✕</button>
-    <button id="shorthandBtn" class="shorthand-button"></button>
-  </div>
-
-  <script>
-    const config = window.PowerUp?.embed?.config || {};
-
-    const btn = document.getElementById('shorthandBtn');
-    btn.textContent = config.buttonText || 'Voir le contenu';
-    btn.style.backgroundColor = config.bgColor || '#D51D2C';
-    btn.style.color = config.textColor || '#FFFFFF';
-
-    btn.onclick = () => {
-      if (config.shorthandUrl) {
-        window.open(config.shorthandUrl, '_blank');
-      } else {
-        alert('Aucune URL Shorthand fournie.');
-      }
-    };
-  </script>
-
-</body>
-</html>
+  // Envoyer la hauteur de l'iframe à Composer
+  window.addEventListener("load", () => {
+    const height = document.body.scrollHeight;
+    sendMessage("height", { height });
+  });
+</script>

@@ -4,13 +4,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Embed Bouton Shorthand</title>
+  <title>Custom Embed: Bouton Shorthand</title>
   <style>
     body {
       font-family: sans-serif;
-      padding: 1rem;
       max-width: 600px;
-      margin: auto;
+      margin: 2rem auto;
+      padding: 1rem;
     }
     label {
       display: block;
@@ -26,13 +26,13 @@
     .color-group {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
     }
     .color-group input[type="color"] {
       width: 40px;
       height: 40px;
       border: none;
-      padding: 0;
     }
     .color-group input[type="text"] {
       width: 100px;
@@ -50,7 +50,7 @@
   </style>
 </head>
 <body>
-  <h2>Configurer le bouton Shorthand</h2>
+  <h2>Insérer un bouton Shorthand</h2>
 
   <label>URL du lien :
     <input id="link" type="url" placeholder="https://votreshorthand.com/story" />
@@ -78,56 +78,53 @@
 
   <script>
     function syncColors() {
-      const bgColor = document.getElementById('bgcolor');
+      const bg = document.getElementById('bgcolor');
       const bgHex = document.getElementById('bgcolor-hex');
-      bgColor.addEventListener('input', () => bgHex.value = bgColor.value);
-      bgHex.addEventListener('input', () => bgColor.value = bgHex.value);
+      bg.addEventListener('input', () => bgHex.value = bg.value);
+      bgHex.addEventListener('input', () => bg.value = bgHex.value);
 
-      const textColor = document.getElementById('textcolor');
-      const textHex = document.getElementById('textcolor-hex');
-      textColor.addEventListener('input', () => textHex.value = textColor.value);
-      textHex.addEventListener('input', () => textColor.value = textColor.value);
+      const tc = document.getElementById('textcolor');
+      const tcHex = document.getElementById('textcolor-hex');
+      tc.addEventListener('input', () => tcHex.value = tc.value);
+      tcHex.addEventListener('input', () => tc.value = tcHex.value);
     }
 
-    window.addEventListener('DOMContentLoaded', syncColors);
+    window.addEventListener('DOMContentLoaded', () => {
+      syncColors();
+      document.getElementById('submitBtn').addEventListener('click', () => {
+        const link = document.getElementById('link').value;
+        const text = document.getElementById('text').value || 'Voir le contenu';
+        const bg = document.getElementById('bgcolor').value;
+        const tc = document.getElementById('textcolor').value;
 
-    function submitToComposer() {
-      const link = document.getElementById('link').value;
-      const text = document.getElementById('text').value || 'Voir le contenu';
-      const bgColor = document.getElementById('bgcolor').value;
-      const textColor = document.getElementById('textcolor').value;
-
-      const html = `
-<div style="width: 100%; max-width: 700px; margin: 2rem auto; text-align: center;">
-  <a href="${link}" target="_blank" rel="noopener noreferrer" style="
-    background-color: ${bgColor};
-    color: ${textColor};
-    padding: 1rem 2rem;
-    font-size: 18px;
-    font-family: 'Red Hat Display', sans-serif;
-    border-radius: 6px;
-    text-decoration: none;
-    display: inline-block;
-  ">
-    ${text}
+        const html = \`
+<div style="text-align:center; margin:2rem 0;">
+  <a href="\${link}" target="_blank" rel="noopener noreferrer" style="
+    background-color:\${bg};
+    color:\${tc};
+    padding:1rem 2rem;
+    font-size:18px;
+    font-family:sans-serif;
+    border-radius:6px;
+    text-decoration:none;
+    display:inline-block;">
+    \${text}
   </a>
-</div>`.trim();
+</div>\`.trim();
 
-      alert('✅ Envoi du bloc HTML vers Arc XP Composer...');
-      console.log('📤 postMessage envoyé :', html);
-
-      window.parent.postMessage({
-        source: 'composer-embed',
-        action: 'insert',
-        payload: {
-          type: 'custom_embed',
-          subtype: 'shorthand-button',
-          fields: { raw_html: html }
-        }
-      }, '*');
-    }
-  
-    document.getElementById('submitBtn').addEventListener('click', submitToComposer);
-    </script>
+        window.parent.postMessage({
+          source: 'composer-embed',
+          action: 'insert',
+          payload: {
+            type: 'custom_embed',
+            subtype: 'shorthand-button',
+            fields: {
+              html
+            }
+          }
+        }, '*');
+      });
+    });
+  </script>
 </body>
 </html>

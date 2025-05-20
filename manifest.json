@@ -1,0 +1,12 @@
+{
+  "custom_embed_type": "shorthand-button",
+  "display_name": "Bouton Shorthand",
+  "schema": {
+    "fields": {
+      "html": {
+        "type": "string",
+        "description": "Bloc HTML \u00e0 ins\u00e9rer"
+      }
+    }
+  }
+}

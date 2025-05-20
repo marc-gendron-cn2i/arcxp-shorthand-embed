@@ -1,1 +1,40 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .shorthand-button {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .shorthand-button a {
+      font-family: 'Red Hat Display', sans-serif;
+      font-size: 16px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="shorthand-button" id="button-container"></div>
+
+  <script>
+    const render = (config) => {
+      const container = document.getElementById('button-container');
+      const button = document.createElement('a');
+      button.href = config.url;
+      button.target = '_blank';
+      button.innerText = config.btn_text || 'Lire la suite';
+      button.style.backgroundColor = config.btn_color || '#D51D2C';
+      button.style.color = config.text_color || '#FFFFFF';
+      container.appendChild(button);
+    };
+
+    render(data.config);
+  </script>
+</body>
+</html>

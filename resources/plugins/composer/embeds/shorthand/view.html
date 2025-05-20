@@ -2,8 +2,6 @@
 <html>
 <head>
   <title>Shorthand Button View</title>
-  <!-- ✅ Load Composer SDK -->
-  <script src="https://composer-tools.arc-cdn.net/core/arc-composer-sdk-v1.js"></script>
   <style>
     .shorthand-button {
       display: flex;
@@ -24,20 +22,42 @@
 <body>
   <div class="shorthand-button" id="button-container"></div>
 
+  <!-- ✅ Load Composer SDK dynamically -->
   <script>
-    addEventListenerForMessage('data', (incoming) => {
-      const config = incoming?.config || {};
-      const container = document.getElementById('button-container');
+    const loadComposerSdk = () => {
+      const script = document.createElement('script');
+      script.src = 'https://composer-tools.arc-cdn.net/core/arc-composer-sdk-v1.js';
+      script.onload = () => {
+        if (typeof addEventListenerForMessage === 'function') {
+          initComposerView();
+        } else {
+          console.error('Composer SDK loaded, but functions are missing.');
+        }
+      };
+      script.onerror = () => {
+        console.error('Failed to load Composer SDK.');
+      };
+      document.head.appendChild(script);
+    };
 
-      const button = document.createElement('a');
-      button.href = config.url || '#';
-      button.target = '_blank';
-      button.innerText = config.btn_text || 'Lire la suite';
-      button.style.backgroundColor = config.btn_color || '#D51D2C';
-      button.style.color = config.text_color || '#FFFFFF';
+    const initComposerView = () => {
+      addEventListenerForMessage('data', (incoming) => {
+        const config = incoming?.config || {};
+        const container = document.getElementById('button-container');
 
-      container.appendChild(button);
-    });
+        const button = document.createElement('a');
+        button.href = config.url || '#';
+        button.target = '_blank';
+        button.innerText = config.btn_text || 'Lire la suite';
+        button.style.backgroundColor = config.btn_color || '#D51D2C';
+        button.style.color = config.text_color || '#FFFFFF';
+
+        container.appendChild(button);
+      });
+    };
+
+    // ✅ Start SDK load
+    loadComposerSdk();
   </script>
 </body>
 </html>

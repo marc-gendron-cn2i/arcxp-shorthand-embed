@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Configurer le bouton Shorthand</title>
+  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Red Hat Display', sans-serif;
+      padding: 40px;
+      max-width: 600px;
+      margin: auto;
+      background-color: #fff;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 8px;
+      font-weight: 700;
+    }
+
+    .color-field {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input[type="text"], input[type="color"] {
+      font-family: 'Red Hat Display', sans-serif;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+    }
+
+    input[type="color"] {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+    }
+
+    .fake-button {
+      margin-top: 24px;
+      padding: 12px 24px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: not-allowed;
+      opacity: 0.6;
+      font-family: 'Red Hat Display', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <label for="url">URL du lien :</label>
+  <input type="text" id="url" data-field="shorthandUrl" placeholder="https://votreshorthand.com/story" required>
+
+  <label for="text">Texte du bouton :</label>
+  <input type="text" id="text" data-field="buttonText" placeholder="Voir le contenu">
+
+  <label>Couleur du bouton :</label>
+  <div class="color-field">
+    <input type="color" id="bgColorPicker" value="#D51D2C">
+    <input type="text" id="bgColorHex" data-field="bgColor" value="#D51D2C">
+  </div>
+
+  <label>Couleur du texte :</label>
+  <div class="color-field">
+    <input type="color" id="textColorPicker" value="#FFFFFF">
+    <input type="text" id="textColorHex" data-field="textColor" value="#FFFFFF">
+  </div>
+
+  <button type="button" class="fake-button" disabled>Ajouter</button>
+
+  <script>
+    // Synchronisation couleur picker ↔ hex
+    const bgColorPicker = document.getElementById('bgColorPicker');
+    const bgColorHex = document.getElementById('bgColorHex');
+    bgColorPicker.oninput = () => bgColorHex.value = bgColorPicker.value;
+    bgColorHex.oninput = () => bgColorPicker.value = bgColorHex.value;
+
+    const textColorPicker = document.getElementById('textColorPicker');
+    const textColorHex = document.getElementById('textColorHex');
+    textColorPicker.oninput = () => textColorHex.value = textColorPicker.value;
+    textColorHex.oninput = () => textColorPicker.value = textColorHex.value;
+
+    // Lecture du paramètre p= pour préremplir les champs
+    function parsePreloadedData() {
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("p");
+
+      if (!raw) return;
+
+      try {
+        const decoded = decodeURIComponent(raw);
+        const data = JSON.parse(decoded);
+
+        for (const [key, value] of Object.entries(data)) {
+          const field = document.querySelector(`[data-field="${key}"]`);
+          if (field) {
+            field.value = value;
+
+            // Mettre à jour les pickers si nécessaires
+            if (key === "bgColor") {
+              bgColorPicker.value = value;
+            } else if (key === "textColor") {
+              textColorPicker.value = value;
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("Erreur de lecture du paramètre p :", e);
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", parsePreloadedData);
+  </script>
+
+</body>
+</html>

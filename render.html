@@ -1,46 +1,108 @@
-<script>
-  // Récupérer la clé ?k= utilisée pour identifier l'instance de l'embed
-  function getKeyFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("k") || "";
-  }
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Bouton Shorthand</title>
 
-  // Fonction pour envoyer des messages à Arc Composer
-  function sendMessage(action, data) {
-    window.parent.postMessage(
-      JSON.stringify({
-        source: "custom_embed",
-        action,
-        data,
-        key: getKeyFromUrl()
-      }),
-      "*"
-    );
-  }
+  <!-- Import Red Hat Display -->
+  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet">
 
-  const config = window.PowerUp?.embed?.config || {};
-
-  const btn = document.getElementById('shorthandBtn');
-  btn.textContent = config.buttonText || 'Voir le contenu';
-  btn.style.backgroundColor = config.bgColor || '#D51D2C';
-  btn.style.color = config.textColor || '#FFFFFF';
-
-  // Envoyer un message au parent au clic sur le bouton
-  btn.onclick = () => {
-    if (config.shorthandUrl) {
-      sendMessage("click", {
-        id: "shorthand-button",
-        url: config.shorthandUrl,
-        config
-      });
-    } else {
-      alert('Aucune URL Shorthand fournie.');
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Red Hat Display', sans-serif;
     }
-  };
 
-  // Envoyer la hauteur de l'iframe à Composer
-  window.addEventListener("load", () => {
-    const height = document.body.scrollHeight;
-    sendMessage("height", { height });
-  });
-</script>
+    .shorthand-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 0;
+      position: relative;
+    }
+
+    .shorthand-button {
+      padding: 12px 24px;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      text-align: center;
+      border-radius: 4px;
+      font-family: 'Red Hat Display', sans-serif;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+    }
+
+    @media only screen and (max-width: 768px) {
+      .shorthand-button {
+        font-size: 16px;
+        padding: 10px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="shorthand-container" id="shorthandEmbed">
+    <button class="close-btn" onclick="document.getElementById('shorthandEmbed').style.display='none'">✕</button>
+    <button id="shorthandBtn" class="shorthand-button">Voir le contenu</button>
+  </div>
+
+  <script>
+    // 1. Récupère la clé "k" dans l'URL (Arc utilise ça pour suivre l'instance)
+    function getKeyFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("k") || "";
+    }
+
+    // 2. Envoie un message postMessage à Arc Composer
+    function sendMessage(action, data) {
+      window.parent.postMessage(
+        JSON.stringify({
+          source: "custom_embed",
+          action,
+          data,
+          key: getKeyFromUrl()
+        }),
+        "*"
+      );
+    }
+
+    // 3. Récupération des paramètres injectés par Arc
+    const config = window.PowerUp?.embed?.config || {};
+
+    const btn = document.getElementById('shorthandBtn');
+    btn.textContent = config.buttonText || 'Voir le contenu';
+    btn.style.backgroundColor = config.bgColor || '#D51D2C';
+    btn.style.color = config.textColor || '#FFFFFF';
+
+    // 4. Clic sur le bouton : envoyer à Arc (Composer ou app mobile)
+    btn.onclick = () => {
+      if (config.shorthandUrl) {
+        sendMessage("click", {
+          id: "shorthand-button",
+          url: config.shorthandUrl,
+          config
+        });
+      } else {
+        alert('Aucune URL Shorthand fournie.');
+      }
+    };
+
+    // 5. Envoie la hauteur de l'embed à Arc
+    window.addEventListener("load", () => {
+      const height = document.body.scrollHeight;
+      sendMessage("height", { height });
+    });
+  </script>
+
+</body>
+</html>

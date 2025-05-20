@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <title>Shorthand Button</title>
+  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    body {
+      font-family: 'Red Hat Display', sans-serif;
+    }
+
     .shorthand-container {
       display: flex;
       justify-content: center;
@@ -19,6 +24,9 @@
       cursor: pointer;
       text-align: center;
       border-radius: 4px;
+      background-color: #D51D2C;
+      color: #FFFFFF;
+      font-family: 'Red Hat Display', sans-serif;
     }
 
     .close-btn {
@@ -40,22 +48,19 @@
   </style>
 </head>
 <body>
+
   <div class="shorthand-container" id="shorthandEmbed">
     <button class="close-btn" onclick="document.getElementById('shorthandEmbed').style.display='none'">✕</button>
-    <button id="shorthandBtn" class="shorthand-button"></button>
+    <button id="shorthandBtn" class="shorthand-button">
+      Découvrir la réponse.
+    </button>
   </div>
 
   <script>
-    const config = window.PowerUp.embed.config;
-
-    const btn = document.getElementById('shorthandBtn');
-    btn.textContent = config.buttonText || 'Lire';
-    btn.style.backgroundColor = config.bgColor || '#000';
-    btn.style.color = config.textColor || '#fff';
-
-    btn.onclick = () => {
-      window.open(config.shorthandUrl, '_blank');
+    document.getElementById('shorthandBtn').onclick = () => {
+      window.open('https://immersif.lescoops.ca/0e81cd11-9e1c-44db-b517-6418f3ffe4d4/index.html', '_blank');
     };
   </script>
+
 </body>
 </html>

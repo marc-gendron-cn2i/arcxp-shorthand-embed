@@ -7,10 +7,12 @@
       font-family: 'Red Hat Display', sans-serif;
       padding: 16px;
     }
+
     label {
       display: block;
       margin-bottom: 10px;
     }
+
     input[type="text"] {
       width: 100%;
       padding: 8px;
@@ -20,25 +22,30 @@
 </head>
 <body>
   <h2>Shorthand Story Button</h2>
+
   <label>
     Button Text:
-    <input type="text" id="btn_text" />
+    <input type="text" id="btn_text" value="Découvrir le contenu" />
   </label>
+
   <label>
     Shorthand URL:
-    <input type="text" id="url" />
+    <input type="text" id="url" placeholder="https://immersif.lescoops.ca/votre-contenu-shorthand..." />
   </label>
+
   <label>
     Button Color:
-    <input type="color" id="btn_color" />
-    <input type="text" id="btn_color_code" placeholder="#D51D2C" />
+    <input type="color" id="btn_color" value="#D51D2C" />
+    <input type="text" id="btn_color_code" value="#D51D2C" />
   </label>
+
   <label>
     Text Color:
-    <input type="color" id="text_color" />
-    <input type="text" id="text_color_code" placeholder="#FFFFFF" />
+    <input type="color" id="text_color" value="#FFFFFF" />
+    <input type="text" id="text_color_code" value="#FFFFFF" />
   </label>
-  <button onclick="applyChanges()">Apply</button>
+
+  <button onclick="applyChanges()">Ajouter</button>
 
   <script>
     window.onload = () => {
@@ -68,4 +75,3 @@
   </script>
 </body>
 </html>
-

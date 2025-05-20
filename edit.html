@@ -1,30 +1,78 @@
-<!DOCTYPE html>\
-<html>\
-<head>\
-  <title>Configure Shorthand Button</title>\
-  <style>\
-    body \{ font-family: sans-serif; padding: 20px; \}\
-    label \{ display: block; margin-top: 10px; \}\
-    input \{ width: 100%; padding: 5px; \}\
-  </style>\
-</head>\
-<body>\
-  <label>\
-    Shorthand URL:\
-    <input type="text" data-field="shorthandUrl" placeholder="https://yourstory.shorthand.com/" required />\
-  </label>\
-  <label>\
-    Button Text:\
-    <input type="text" data-field="buttonText" placeholder="Read Story" />\
-  </label>\
-  <label>\
-    Background Color:\
-    <input type="color" data-field="bgColor" value="#000000" />\
-  </label>\
-  <label>\
-    Text Color:\
-    <input type="color" data-field="textColor" value="#ffffff" />\
-  </label>\
-</body>\
-</html>\
-}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Insérer un bouton Shorthand</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 40px;
+      max-width: 600px;
+      margin: auto;
+      background-color: #fff;
+      color: #333;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 8px;
+      font-weight: bold;
+    }
+
+    input[type="text"], input[type="color"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    input[type="color"] {
+      padding: 0;
+      height: 40px;
+      cursor: pointer;
+    }
+
+    button {
+      margin-top: 24px;
+      padding: 12px 24px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Insérer un bouton Shorthand</h1>
+
+  <label for="url">URL du lien :</label>
+  <input type="text" data-field="shorthandUrl" id="url" placeholder="https://votreshorthand.com/story" required>
+
+  <label for="text">Texte du bouton :</label>
+  <input type="text" data-field="buttonText" id="text" placeholder="Voir le contenu">
+
+  <label for="bg">Couleur du bouton :</label>
+  <input type="color" data-field="bgColor" id="bg" value="#D51D2C">
+
+  <label for="textColor">Couleur du texte :</label>
+  <input type="color" data-field="textColor" id="textColor" value="#FFFFFF">
+
+  <button type="button">Ajouter</button>
+
+</body>
+</html>

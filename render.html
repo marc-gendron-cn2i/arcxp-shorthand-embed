@@ -24,8 +24,6 @@
       cursor: pointer;
       text-align: center;
       border-radius: 4px;
-      background-color: #D51D2C;
-      color: #FFFFFF;
       font-family: 'Red Hat Display', sans-serif;
     }
 
@@ -51,14 +49,23 @@
 
   <div class="shorthand-container" id="shorthandEmbed">
     <button class="close-btn" onclick="document.getElementById('shorthandEmbed').style.display='none'">✕</button>
-    <button id="shorthandBtn" class="shorthand-button">
-      Découvrir la réponse.
-    </button>
+    <button id="shorthandBtn" class="shorthand-button"></button>
   </div>
 
   <script>
-    document.getElementById('shorthandBtn').onclick = () => {
-      window.open('https://immersif.lescoops.ca/0e81cd11-9e1c-44db-b517-6418f3ffe4d4/index.html', '_blank');
+    const config = window.PowerUp?.embed?.config || {};
+
+    const btn = document.getElementById('shorthandBtn');
+    btn.textContent = config.buttonText || 'Voir le contenu';
+    btn.style.backgroundColor = config.bgColor || '#D51D2C';
+    btn.style.color = config.textColor || '#FFFFFF';
+
+    btn.onclick = () => {
+      if (config.shorthandUrl) {
+        window.open(config.shorthandUrl, '_blank');
+      } else {
+        alert('Aucune URL Shorthand fournie.');
+      }
     };
   </script>
 

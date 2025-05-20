@@ -1,33 +1,13 @@
 {
-  "name": "Shorthand Embed Button",
-  "description": "Add a button linking to a Shorthand story",
+  "name": "Bouton Shorthand",
+  "description": "Ajoute un bouton vers un contenu Shorthand",
   "version": "1.0.0",
   "edit": "edit.html",
   "render": "render.html",
   "inputs": [
-    {
-      "label": "Shorthand URL",
-      "name": "shorthandUrl",
-      "type": "text",
-      "required": true
-    },
-    {
-      "label": "Button Text",
-      "name": "buttonText",
-      "type": "text",
-      "defaultValue": "Voir le contenu"
-    },
-    {
-      "label": "Background Color",
-      "name": "bgColor",
-      "type": "text",
-      "defaultValue": "#D51D2C"
-    },
-    {
-      "label": "Text Color",
-      "name": "textColor",
-      "type": "text",
-      "defaultValue": "#FFFFFF"
-    }
+    { "label": "Shorthand URL", "name": "shorthandUrl", "type": "text", "required": true },
+    { "label": "Texte du bouton", "name": "buttonText", "type": "text", "defaultValue": "Voir le contenu" },
+    { "label": "Couleur du bouton", "name": "bgColor", "type": "text", "defaultValue": "#D51D2C" },
+    { "label": "Couleur du texte", "name": "textColor", "type": "text", "defaultValue": "#FFFFFF" }
   ]
 }

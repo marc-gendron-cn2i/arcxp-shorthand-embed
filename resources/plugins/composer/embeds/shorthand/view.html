@@ -1,63 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Shorthand Button View</title>
+  <meta charset="utf-8"/>
+  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet"/>
   <style>
-    .shorthand-button {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-    }
-
-    .shorthand-button a {
-      font-family: 'Red Hat Display', sans-serif;
-      font-size: 16px;
-      padding: 12px 24px;
-      border-radius: 8px;
-      text-decoration: none;
-      white-space: nowrap;
+    body { font-family:'Red Hat Display',sans-serif; padding:1rem; text-align:center; }
+    .btn {
+      display:inline-block;
+      padding:0.75rem 1.5rem;
+      border:none;
+      border-radius:4px;
+      text-decoration:none;
+      font-size:1rem;
+      cursor:pointer;
     }
   </style>
 </head>
 <body>
-  <div class="shorthand-button" id="button-container"></div>
-
-  <!-- ✅ Load Composer SDK dynamically -->
+  <div id="preview"></div>
   <script>
-    const loadComposerSdk = () => {
-      const script = document.createElement('script');
-      script.src = 'https://composer-tools.arc-cdn.net/core/arc-composer-sdk-v1.js';
-      script.onload = () => {
-        if (typeof addEventListenerForMessage === 'function') {
-          initComposerView();
-        } else {
-          console.error('Composer SDK loaded, but functions are missing.');
-        }
-      };
-      script.onerror = () => {
-        console.error('Failed to load Composer SDK.');
-      };
-      document.head.appendChild(script);
-    };
-
-    const initComposerView = () => {
-      addEventListenerForMessage('data', (incoming) => {
-        const config = incoming?.config || {};
-        const container = document.getElementById('button-container');
-
-        const button = document.createElement('a');
-        button.href = config.url || '#';
-        button.target = '_blank';
-        button.innerText = config.btn_text || 'Lire la suite';
-        button.style.backgroundColor = config.btn_color || '#D51D2C';
-        button.style.color = config.text_color || '#FFFFFF';
-
-        container.appendChild(button);
-      });
-    };
-
-    // ✅ Start SDK load
-    loadComposerSdk();
+    let data = {};
+    window.addEventListener('message', e => {
+      if (e.data && e.data.type === 'data') {
+        data = e.data.data;
+        render();
+      }
+    });
+    function render() {
+      if (!data.id) return;
+      const a = document.createElement('a');
+      a.href = data.id;
+      a.target = '_blank';
+      a.textContent = data.config.buttonText;
+      a.className = 'btn';
+      a.style.backgroundColor = data.config.bgColor;
+      a.style.color = data.config.textColor;
+      document.getElementById('preview').innerHTML = '';
+      document.getElementById('preview').appendChild(a);
+    }
+    // request init
+    parent.postMessage({type:'ready'}, '*');
   </script>
 </body>
 </html>

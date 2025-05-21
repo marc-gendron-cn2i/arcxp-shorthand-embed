@@ -1,1 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shorthand Story Embed – Edit</title>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" />
+  <style>
+    /* (Same CSS as search.html for layout and styling) */
+    body { font-family: sans-serif; padding: 20px; }
+    label { display: block; margin: 0.5em 0 0.2em; font-weight: bold; }
+    input[type=text] { width: 100%; padding: 4px; }
+    .color-field { display: flex; align-items: center; margin-bottom: 1em; }
+    .color-field input[type=color] { margin-right: 8px; }
+    .button-row { margin-top: 1em; }
+    .button-row input[type=button] { margin-right: 10px; padding: 6px 12px; }
+  </style>
+</head>
+<body>
+  <h1 style="font-family: 'Red Hat Display', sans-serif; font-size: 1.2em; margin-bottom: 0.5em;">
+    Edit Shorthand Story Button
+  </h1>
+  <p class="lead text-muted">Update the story URL or button appearance:</p>
+
+  <!-- Same form fields as in search panel -->
+  <label for="storyUrl">Shorthand Story URL:</label>
+  <input type="text" id="storyUrl" name="storyUrl" />
+
+  <label for="btnText">Button Text:</label>
+  <input type="text" id="btnText" name="btnText" />
+
+  <div class="color-field">
+    <label for="bgColor" style="flex: 0 0 130px;">Button Background:</label>
+    <input type="color" id="bgColor" name="bgColor" />
+    <input type="text" id="bgColorHex" name="bgColorHex" style="width:80px;" />
+  </div>
+
+  <div class="color-field">
+    <label for="textColor" style="flex: 0 0 130px;">Button Text Color:</label>
+    <input type="color" id="textColor" name="textColor" />
+    <input type="text" id="textColorHex" name="textColorHex" style="width:80px;" />
+  </div>
+
+  <div class="button-row">
+    <input type="button" value="Save" onclick="submitEdit()" />
+    <input type="button" value="Cancel" onclick="cancelEdit()" />
+  </div>
+
+  <script>
+    // On load, handshake with Composer
+    window.addEventListener('DOMContentLoaded', function() {
+      // Fill in form fields with current values from the embed data
+      const params = new URLSearchParams(window.location.search);
+      const payload = params.get('p');
+      if (payload) {
+        try {
+          const data = JSON.parse(decodeURIComponent(payload));
+          document.getElementById('storyUrl').value = data.url || '';
+          document.getElementById('btnText').value = data.config.buttonText || 'Découvrir le contenu';
+          document.getElementById('bgColor').value = data.config.buttonColor || '#0055FF';
+          document.getElementById('bgColorHex').value = data.config.buttonColor || '#0055FF';
+          document.getElementById('textColor').value = data.config.textColor || '#FFFFFF';
+          document.getElementById('textColorHex').value = data.config.textColor || '#FFFFFF';
+          // Store the original embed ID to reuse it
+          window._embedId = data.id;
+        } catch(e) {
+          console.error("Error parsing edit data:", e);
+        }
+      }
+      // Send handshake ready message with current content height
+      window.parent.postMessage({ source: 'custom_embed', action: 'ready', data: { height: document.body.scrollHeight } }, '*');
+    });
+
+    // Sync color inputs (same logic as in search panel)
+    const bgPicker = document.getElementById('bgColor');
+    const bgHex = document.getElementById('bgColorHex');
+    const textPicker = document.getElementById('textColor');
+    const textHex = document.getElementById('textColorHex');
+    bgPicker.addEventListener('input', () => { bgHex.value = bgPicker.value; });
+    bgHex.addEventListener('input', () => {
+      const val = bgHex.value;
+      if(/^#([0-9A-Fa-f]{6})$/.test(val)) { bgPicker.value = val; }
+    });
+    textPicker.addEventListener('input', () => { textHex.value = textPicker.value; });
+    textHex.addEventListener('input', () => {
+      const val = textHex.value;
+      if(/^#([0-9A-Fa-f]{6})$/.test(val)) { textPicker.value = val; }
+    });
+
+    // Send updated data back to Composer on save
+    function submitEdit() {
+      const storyUrl = document.getElementById('storyUrl').value.trim();
+      const buttonText = document.getElementById('btnText').value;
+      const buttonColor = bgPicker.value;
+      const textColor = textPicker.value;
+      if (!storyUrl) {
+        alert("Story URL cannot be empty.");
+        return;
+      }
+      const embedId = window._embedId || ("shorthand-" + Date.now());
+      const updatedData = {
+        id: embedId,
+        url: storyUrl,
+        config: {
+          buttonText: buttonText || "Découvrir le contenu",
+          buttonColor: buttonColor,
+          textColor: textColor
+        }
+      };
+      window.parent.postMessage({ source: 'custom_embed', action: 'data', data: updatedData }, '*');
+    }
+    function cancelEdit() {
+      window.parent.postMessage({ source: 'custom_embed', action: 'cancel' }, '*');
+    }
+  </script>
+</body>
+</html>
 

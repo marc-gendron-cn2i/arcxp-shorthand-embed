@@ -1,1 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shorthand Story Embed – Insert</title>
+  <!-- Include Red Hat Display font for previewing the button text style -->
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" />
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    label { display: block; margin: 0.5em 0 0.2em; font-weight: bold; }
+    input[type=text] { width: 100%; padding: 4px; }
+    .color-field { display: flex; align-items: center; margin-bottom: 1em; }
+    .color-field input[type=color] { margin-right: 8px; }
+    .button-row { margin-top: 1em; }
+    .button-row input[type=button] { margin-right: 10px; padding: 6px 12px; }
+  </style>
+</head>
+<body>
+  <h1 style="font-family: 'Red Hat Display', sans-serif; font-size: 1.2em; margin-bottom: 0.5em;">
+    Insert Shorthand Story Button
+  </h1>
+  <p class="lead text-muted">Provide the story URL and customize the button:</p>
+
+  <!-- Input fields for embed configuration -->
+  <label for="storyUrl">Shorthand Story URL:</label>
+  <input type="text" id="storyUrl" name="storyUrl" placeholder="https://example.shorthandstories.com/..." />
+
+  <label for="btnText">Button Text:</label>
+  <input type="text" id="btnText" name="btnText" value="Découvrir le contenu" />
+
+  <div class="color-field">
+    <label for="bgColor" style="flex: 0 0 130px;">Button Background:</label>
+    <input type="color" id="bgColor" name="bgColor" value="#0055FF" />
+    <input type="text" id="bgColorHex" name="bgColorHex" value="#0055FF" style="width:80px;" />
+  </div>
+
+  <div class="color-field">
+    <label for="textColor" style="flex: 0 0 130px;">Button Text Color:</label>
+    <input type="color" id="textColor" name="textColor" value="#FFFFFF" />
+    <input type="text" id="textColorHex" name="textColorHex" value="#FFFFFF" style="width:80px;" />
+  </div>
+
+  <div class="button-row">
+    <input type="button" value="Insert" onclick="submitEmbed()" />
+    <input type="button" value="Cancel" onclick="cancelEmbed()" />
+  </div>
+
+  <script>
+    // Send handshake message when panel is loaded and ready
+    window.addEventListener('DOMContentLoaded', function() {
+      // Adjust height if needed based on content
+      const height = document.body.scrollHeight;
+      window.parent.postMessage({ source: 'custom_embed', action: 'ready', data: { height } }, '*');
+    });
+
+    // Keep hex text inputs in sync with color pickers
+    const bgPicker = document.getElementById('bgColor');
+    const bgHex = document.getElementById('bgColorHex');
+    const textPicker = document.getElementById('textColor');
+    const textHex = document.getElementById('textColorHex');
+
+    bgPicker.addEventListener('input', () => { bgHex.value = bgPicker.value; });
+    bgHex.addEventListener('input', () => {
+      const val = bgHex.value;
+      if(/^#([0-9A-Fa-f]{6})$/.test(val)) { bgPicker.value = val; }
+    });
+    textPicker.addEventListener('input', () => { textHex.value = textPicker.value; });
+    textHex.addEventListener('input', () => {
+      const val = textHex.value;
+      if(/^#([0-9A-Fa-f]{6})$/.test(val)) { textPicker.value = val; }
+    });
+
+    // Function to send the selected data back to Composer
+    function submitEmbed() {
+      const storyUrl = document.getElementById('storyUrl').value.trim();
+      const buttonText = document.getElementById('btnText').value;
+      const buttonColor = bgPicker.value;
+      const textColor = textPicker.value;
+      if (!storyUrl) {
+        alert("Please enter a Shorthand story URL.");
+        return;
+      }
+      // Generate a unique ID for this embed instance (could use UUID or timestamp)
+      const embedId = "shorthand-" + Date.now();
+      // Prepare the data payload with required fields
+      const embedData = {
+        id: embedId,
+        url: storyUrl,
+        config: {
+          buttonText: buttonText || "Découvrir le contenu",
+          buttonColor: buttonColor,
+          textColor: textColor
+        }
+      };
+      // Send the data message to Composer
+      window.parent.postMessage({ source: 'custom_embed', action: 'data', data: embedData }, '*');
+    }
+
+    // Function to cancel the embed insertion
+    function cancelEmbed() {
+      window.parent.postMessage({ source: 'custom_embed', action: 'cancel' }, '*');
+    }
+  </script>
+</body>
+</html>
 

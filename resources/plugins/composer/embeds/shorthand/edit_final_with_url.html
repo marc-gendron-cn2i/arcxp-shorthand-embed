@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Modifier l'intégration Shorthand</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 1rem;
+      max-width: 600px;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    input[type="text"], input[type="url"] {
+      width: 100%;
+      padding: 0.4rem;
+      font-size: 1rem;
+    }
+    input[type="button"] {
+      padding: 0.6rem 1rem;
+      margin-top: 1.5rem;
+    }
+  </style>
+
+  <script>
+    const parseQueryString = () => {
+      const params = new URLSearchParams(window.location.search);
+      const k = params.get("k") || "";
+      let p = {};
+      try {
+        const raw = decodeURIComponent(params.get("p") || "{}");
+        p = JSON.parse(raw);
+      } catch (e) {
+        console.warn("⚠️ Failed to parse param `p`: ", e);
+      }
+      return { k, p };
+    };
+
+    const sendMessage = (action, data) => {
+      setTimeout(() => {
+        window.parent.postMessage(
+          JSON.stringify({
+            source: "custom_embed",
+            action,
+            data,
+            key: parseQueryString().k
+          }),
+          "*"
+        );
+      }, 0);
+    };
+
+    window.fetchData = function fetchData(ansCustomEmbed) {
+      window.data = ansCustomEmbed;
+      const config = ansCustomEmbed.embed?.config || {};
+      document.getElementById("storyUrl").value = ansCustomEmbed.embed?.url || "";
+      document.getElementById("btnText").value = config.button_text || "Découvrir le contenu";
+      document.getElementById("bgColor").value = config.background_color || "#D51D2C";
+      document.getElementById("bgColorHex").value = config.background_color || "#D51D2C";
+      document.getElementById("textColor").value = config.text_color || "#FFFFFF";
+      document.getElementById("textColorHex").value = config.text_color || "#FFFFFF";
+    }
+
+    window.applyChanges = function applyChanges() {
+      if (!window.data || !window.data.embed) {
+        console.warn("⚠️ No embed data available.");
+        return;
+      }
+
+      window.data.embed.url = document.getElementById("storyUrl").value;
+      window.data.embed.config = {
+        button_text: document.getElementById("btnText").value,
+        background_color: document.getElementById("bgColorHex").value,
+        text_color: document.getElementById("textColorHex").value
+      };
+
+      console.log("✅ Updating embed with:", window.data);
+
+      sendMessage("data", window.data);
+      alert("✅ Les changements ont été enregistrés.");
+      window.setTimeout(() => window.close(), 300);
+    }
+
+    window.cancelEmbed = function cancelEmbed() {
+      sendMessage("cancel");
+    }
+
+    function syncColorInputs(colorInput, hexInput) {
+      colorInput.addEventListener("input", () => {
+        hexInput.value = colorInput.value;
+      });
+      hexInput.addEventListener("input", () => {
+        if (/^#([0-9A-F]{3}){1,2}$/i.test(hexInput.value)) {
+          colorInput.value = hexInput.value;
+        }
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const { p } = parseQueryString();
+      if (p) fetchData(p);
+      syncColorInputs(document.getElementById("bgColor"), document.getElementById("bgColorHex"));
+      syncColorInputs(document.getElementById("textColor"), document.getElementById("textColorHex"));
+    });
+  </script>
+</head>
+<body>
+
+<h2>Modifier l’intégration Shorthand</h2>
+
+<label for="storyUrl">URL de l'histoire Shorthand</label>
+<input type="url" id="storyUrl" placeholder="https://..." />
+
+<label for="btnText">Texte du bouton</label>
+<input type="text" id="btnText" value="Découvrir le contenu" />
+
+<label>Couleur du bouton</label>
+<div class="color-row">
+  <input type="color" id="bgColor" value="#D51D2C" />
+  <input type="text" id="bgColorHex" value="#D51D2C" />
+</div>
+
+<label>Couleur du texte</label>
+<div class="color-row">
+  <input type="color" id="textColor" value="#FFFFFF" />
+  <input type="text" id="textColorHex" value="#FFFFFF" />
+</div>
+
+<input type="button" value="Appliquer les changements" onclick="applyChanges()" />
+<input type="button" value="Annuler" onclick="cancelEmbed()" />
+
+</body>
+</html>

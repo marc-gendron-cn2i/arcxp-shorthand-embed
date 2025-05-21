@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Aperçu du bouton Shorthand</title>
+  <style>
+    body {
+      font-family: 'Red Hat Display', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+    .button-preview {
+      text-align: center;
+    }
+    .button-preview a {
+      text-decoration: none;
+    }
+    .button-preview button {
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+  <script>
+    const parseQueryString = () => {
+      const params = new URLSearchParams(window.location.search);
+      const p = JSON.parse(decodeURIComponent(params.get("p") || "{}"));
+      return p;
+    };
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const embed = parseQueryString().embed || {};
+      const config = embed.config || {};
+
+      const url = embed.url || "#";
+      const text = config.button_text || "Découvrir le contenu";
+      const bg = config.background_color || "#D51D2C";
+      const fg = config.text_color || "#FFFFFF";
+
+      const button = document.getElementById("shorthand-button");
+      const link = document.getElementById("shorthand-link");
+
+      button.textContent = text;
+      button.style.backgroundColor = bg;
+      button.style.color = fg;
+
+      link.href = url;
+    });
+  </script>
+</head>
+<body>
+  <div class="button-preview">
+    <a id="shorthand-link" target="_blank" rel="noopener noreferrer">
+      <button id="shorthand-button">Découvrir le contenu</button>
+    </a>
+  </div>
+</body>
+</html>

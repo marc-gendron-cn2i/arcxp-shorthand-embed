@@ -15,6 +15,16 @@
     .button-row { margin-top: 1em; }
     .button-row input[type=button] { margin-right: 10px; padding: 6px 12px; }
   </style>
+
+<script>
+function sendMessage(type, payload) {
+  window.parent.postMessage({
+    source: 'composer',
+    action: type,
+    payload: payload
+  }, '*');
+}
+</script>
 </head>
 <body>
   <h1 style="font-family: 'Red Hat Display', sans-serif; font-size: 1.2em; margin-bottom: 0.5em;">
@@ -56,11 +66,11 @@
         try {
           const data = JSON.parse(decodeURIComponent(payload));
           document.getElementById('storyUrl').value = data.url || '';
-          document.getElementById('btnText').value = data.config.buttonText || 'Découvrir le contenu';
-          document.getElementById('bgColor').value = data.config.buttonColor || '#0055FF';
-          document.getElementById('bgColorHex').value = data.config.buttonColor || '#0055FF';
-          document.getElementById('textColor').value = data.config.textColor || '#FFFFFF';
-          document.getElementById('textColorHex').value = data.config.textColor || '#FFFFFF';
+          document.getElementById('btnText').value = data.embed?.config || {}.buttonText || 'Découvrir le contenu';
+          document.getElementById('bgColor').value = data.embed?.config || {}.buttonColor || '#0055FF';
+          document.getElementById('bgColorHex').value = data.embed?.config || {}.buttonColor || '#0055FF';
+          document.getElementById('textColor').value = data.embed?.config || {}.textColor || '#FFFFFF';
+          document.getElementById('textColorHex').value = data.embed?.config || {}.textColor || '#FFFFFF';
           // Store the original embed ID to reuse it
           window._embedId = data.id;
         } catch(e) {
@@ -116,3 +126,35 @@
 </body>
 </html>
 
+
+<script>
+let data = {};
+
+window.addEventListener("message", (event) => {
+  if (event.data?.payload) {
+    data = event.data.payload;
+    document.getElementById("storyUrl").value = data.url;
+    document.getElementById("btnText").value = data.embed?.config || {}?.button_text || "";
+    document.getElementById("bgColor").value = data.embed?.config || {}?.background_color || "#D51D2C";
+    document.getElementById("textColor").value = data.embed?.config || {}?.text_color || "#FFFFFF";
+  }
+});
+
+document.querySelector("#applyBtn")?.addEventListener("click", () => {
+  const updated = {
+    id: document.getElementById("storyUrl").value,
+    url: document.getElementById("storyUrl").value,
+    config: {
+      button_text: document.getElementById("btnText").value,
+      background_color: document.getElementById("bgColor").value,
+      text_color: document.getElementById("textColor").value
+    }
+  };
+
+  sendMessage('data', updated);
+});
+
+document.querySelector("#cancelBtn")?.addEventListener("click", () => {
+  sendMessage('cancel');
+});
+</script>

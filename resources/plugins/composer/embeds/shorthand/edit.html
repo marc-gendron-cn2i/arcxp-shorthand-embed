@@ -57,6 +57,8 @@
       }, 0);
     };
 
+    sendMessage("ready", { height: 800 });
+
     window.fetchData = function fetchData(ansCustomEmbed) {
       if (!ansCustomEmbed || !ansCustomEmbed.embed) {
         console.warn("❌ Données de configuration manquantes");

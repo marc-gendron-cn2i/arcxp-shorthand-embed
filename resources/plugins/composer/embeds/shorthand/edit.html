@@ -28,6 +28,7 @@
       margin-top: 1.5rem;
     }
   </style>
+
   <script>
     const parseQueryString = () => {
       const params = new URLSearchParams(window.location.search);
@@ -45,50 +46,57 @@
     const sendMessage = (action, data) => {
       setTimeout(() => {
         window.parent.postMessage(
-          JSON.stringify({ source: "custom_embed", action, data, key: parseQueryString().k }),
+          JSON.stringify({
+            source: "custom_embed",
+            action,
+            data,
+            key: parseQueryString().k
+          }),
           "*"
         );
       }, 0);
     };
 
-    function fetchData(ans) {
-      const embed = ans.embed || {};
-      window.data = { type: "custom_embed", embed };
-      const cfg = embed.config || {};
-      document.getElementById("storyUrl").value = embed.url || "";
-      document.getElementById("btnText").value = cfg.button_text || "Découvrir le contenu";
-      document.getElementById("bgColor").value = cfg.background_color || "#D51D2C";
-      document.getElementById("bgColorHex").value = cfg.background_color || "#D51D2C";
-      document.getElementById("textColor").value = cfg.text_color || "#FFFFFF";
-      document.getElementById("textColorHex").value = cfg.text_color || "#FFFFFF";
+    function fetchData(ansCustomEmbed) {
+      if (!ansCustomEmbed || !ansCustomEmbed.embed) {
+        console.warn("❌ Données de configuration manquantes", ansCustomEmbed);
+        return;
+      }
+
+      window.data = ansCustomEmbed;
+
+      const config = ansCustomEmbed.embed.config || {};
+      document.getElementById("storyUrl").value = ansCustomEmbed.embed.url || "";
+      document.getElementById("btnText").value = config.button_text || "Découvrir le contenu";
+      document.getElementById("bgColor").value = config.background_color || "#D51D2C";
+      document.getElementById("bgColorHex").value = config.background_color || "#D51D2C";
+      document.getElementById("textColor").value = config.text_color || "#FFFFFF";
+      document.getElementById("textColorHex").value = config.text_color || "#FFFFFF";
     }
 
     function applyChanges() {
       const storyUrl = document.getElementById("storyUrl").value.trim();
-      const btnText  = document.getElementById("btnText").value.trim();
-      const bg       = document.getElementById("bgColorHex").value.trim();
-      const fg       = document.getElementById("textColorHex").value.trim();
+      const btnText = document.getElementById("btnText").value.trim();
+      const bg = document.getElementById("bgColorHex").value.trim();
+      const fg = document.getElementById("textColorHex").value.trim();
 
-      if (!storyUrl || !btnText || !bg || !fg) {
+      if (!storyUrl || !bg || !fg || !btnText) {
         alert("❌ Tous les champs sont requis.");
         return;
       }
 
-      window.data = {
-        type: "custom_embed",
-        embed: {
-          id: window.data.embed.id || "shorthand-index.html",
-          url: storyUrl,
-          config: {
-            button_text: btnText,
-            background_color: bg,
-            text_color: fg
-          }
+      const embedPayload = {
+        id: "shorthand-index.html",
+        url: storyUrl,
+        config: {
+          button_text: btnText,
+          background_color: bg,
+          text_color: fg
         }
       };
 
-      console.log("✅ Données envoyées :", window.data);
-      sendMessage("data", window.data);
+      console.log("✅ Données envoyées :", embedPayload);
+      sendMessage("data", embedPayload);
       alert("✅ Les changements ont été enregistrés.");
       setTimeout(() => window.close(), 300);
     }
@@ -98,7 +106,9 @@
     }
 
     function syncColorInputs(colorInput, hexInput) {
-      colorInput.addEventListener("input", () => hexInput.value = colorInput.value);
+      colorInput.addEventListener("input", () => {
+        hexInput.value = colorInput.value;
+      });
       hexInput.addEventListener("input", () => {
         if (/^#([0-9A-F]{3}){1,2}$/i.test(hexInput.value)) {
           colorInput.value = hexInput.value;
@@ -108,38 +118,51 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       const { p } = parseQueryString();
-      if (p.embed || p.url) {
-        fetchData(p.embed ? { embed: p.embed } : { embed: { id: p.id, url: p.url, config: p.config } });
+      console.log("🔍 Paramètre reçu dans `p` :", p);
+
+      if (p && (p.embed || p.url)) {
+        fetchData({
+          embed: p.embed ? p.embed : {
+            id: p.id || "shorthand-index.html",
+            url: p.url,
+            config: p.config || {}
+          }
+        });
       } else {
         console.warn("⚠️ Aucun champ `embed` trouvé dans p.");
       }
+
       syncColorInputs(document.getElementById("bgColor"), document.getElementById("bgColorHex"));
       syncColorInputs(document.getElementById("textColor"), document.getElementById("textColorHex"));
+
       sendMessage("ready", { height: 800 });
     });
   </script>
 </head>
 <body>
-  <h2>Modifier l’intégration Shorthand</h2>
-  <label for="storyUrl">URL de l'histoire Shorthand</label>
-  <input type="url" id="storyUrl" placeholder="https://..." />
 
-  <label for="btnText">Texte du bouton</label>
-  <input type="text" id="btnText" />
+<h2>Modifier l’intégration Shorthand</h2>
 
-  <label>Couleur du bouton</label>
-  <div class="color-row">
-    <input type="color" id="bgColor" />
-    <input type="text"  id="bgColorHex" />
-  </div>
+<label for="storyUrl">URL de l'histoire Shorthand</label>
+<input type="url" id="storyUrl" placeholder="https://..." />
 
-  <label>Couleur du texte</label>
-  <div class="color-row">
-    <input type="color" id="textColor" />
-    <input type="text"  id="textColorHex" />
-  </div>
+<label for="btnText">Texte du bouton</label>
+<input type="text" id="btnText" value="Découvrir le contenu" />
 
-  <input type="button" value="Appliquer les changements" onclick="applyChanges()" />
-  <input type="button" value="Annuler" onclick="cancelEmbed()" />
+<label>Couleur du bouton</label>
+<div class="color-row">
+  <input type="color" id="bgColor" value="#D51D2C" />
+  <input type="text" id="bgColorHex" value="#D51D2C" />
+</div>
+
+<label>Couleur du texte</label>
+<div class="color-row">
+  <input type="color" id="textColor" value="#FFFFFF" />
+  <input type="text" id="textColorHex" value="#FFFFFF" />
+</div>
+
+<input type="button" value="Appliquer les changements" onclick="applyChanges()" />
+<input type="button" value="Annuler" onclick="cancelEmbed()" />
+
 </body>
 </html>

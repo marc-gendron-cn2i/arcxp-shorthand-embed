@@ -57,12 +57,16 @@
       }, 0);
     };
 
-    sendMessage("ready", { height: 800 });
-
     window.fetchData = function fetchData(ansCustomEmbed) {
-      window.data = ansCustomEmbed;
-      const config = ansCustomEmbed.embed?.config || {};
-      document.getElementById("storyUrl").value = ansCustomEmbed.embed?.url || "";
+      if (!ansCustomEmbed || !ansCustomEmbed.embed) {
+        console.warn("❌ Données de configuration manquantes");
+        return;
+      }
+
+      window.data = ansCustomEmbed; // ✅ Fix here
+
+      const config = ansCustomEmbed.embed.config || {};
+      document.getElementById("storyUrl").value = ansCustomEmbed.embed.url || "";
       document.getElementById("btnText").value = config.button_text || "Découvrir le contenu";
       document.getElementById("bgColor").value = config.background_color || "#D51D2C";
       document.getElementById("bgColorHex").value = config.background_color || "#D51D2C";

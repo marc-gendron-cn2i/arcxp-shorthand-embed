@@ -57,6 +57,8 @@
       }, 0);
     };
 
+    sendMessage("ready", { height: 800 });
+
     window.fetchData = function fetchData(ansCustomEmbed) {
       window.data = ansCustomEmbed;
       const config = ansCustomEmbed.embed?.config || {};

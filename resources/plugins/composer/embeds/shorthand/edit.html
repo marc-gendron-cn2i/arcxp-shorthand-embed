@@ -38,7 +38,7 @@
         const raw = decodeURIComponent(params.get("p") || "{}");
         p = JSON.parse(raw);
       } catch (e) {
-        console.warn("⚠️ Failed to parse param `p`: ", e);
+        console.warn("⚠️ Erreur de décodage du paramètre `p` :", e);
       }
       return { k, p };
     };
@@ -57,15 +57,13 @@
       }, 0);
     };
 
-    sendMessage("ready", { height: 800 });
-
-    window.fetchData = function fetchData(ansCustomEmbed) {
+    function fetchData(ansCustomEmbed) {
       if (!ansCustomEmbed || !ansCustomEmbed.embed) {
-        console.warn("❌ Données de configuration manquantes");
+        console.warn("❌ Données de configuration manquantes", ansCustomEmbed);
         return;
       }
 
-      window.data = ansCustomEmbed; // ✅ Fix here
+      window.data = ansCustomEmbed;
 
       const config = ansCustomEmbed.embed.config || {};
       document.getElementById("storyUrl").value = ansCustomEmbed.embed.url || "";
@@ -76,7 +74,7 @@
       document.getElementById("textColorHex").value = config.text_color || "#FFFFFF";
     }
 
-    window.applyChanges = function applyChanges() {
+    function applyChanges() {
       if (!window.data || !window.data.embed) {
         console.warn("⚠️ No embed data available.");
         return;
@@ -90,13 +88,12 @@
       };
 
       console.log("✅ Updating embed with:", window.data);
-
       sendMessage("data", window.data);
       alert("✅ Les changements ont été enregistrés.");
       window.setTimeout(() => window.close(), 300);
     }
 
-    window.cancelEmbed = function cancelEmbed() {
+    function cancelEmbed() {
       sendMessage("cancel");
     }
 
@@ -113,9 +110,14 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       const { p } = parseQueryString();
-      if (p) fetchData(p);
+      console.log("🔍 Paramètre reçu dans `p` :", p);
+      if (p && p.embed) fetchData(p);
+      else console.warn("⚠️ Aucun champ `embed` trouvé dans p.");
+
       syncColorInputs(document.getElementById("bgColor"), document.getElementById("bgColorHex"));
       syncColorInputs(document.getElementById("textColor"), document.getElementById("textColorHex"));
+
+      sendMessage("ready", { height: 800 });
     });
   </script>
 </head>

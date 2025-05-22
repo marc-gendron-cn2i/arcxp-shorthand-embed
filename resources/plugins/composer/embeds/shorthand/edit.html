@@ -112,10 +112,12 @@
       const { p } = parseQueryString();
       console.log("🔍 Paramètre reçu dans `p` :", p);
 
-      if (p && (p.embed || (p.type === "custom_embed" && p.url))) {
+      if (p && (p.embed || p.url)) {
+        console.log("🧪 Traitement embed →", p.embed ? "p.embed" : "p.url/config");
+
         fetchData({
           embed: p.embed ? p.embed : {
-            id: "shorthand-index.html",
+            id: p.id || "shorthand-index.html",
             url: p.url,
             config: p.config || {}
           }

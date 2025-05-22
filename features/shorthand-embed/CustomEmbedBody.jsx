@@ -1,45 +1,42 @@
-import React from 'react';
+// src/components/features/shorthand-embed/CustomEmbedBody.jsx
 
-// A simple component to render the Shorthand button embed
+import React from "react";
+
 const CustomEmbedBody = ({ element }) => {
-  // We expect our element to have the embed data structure as saved by Composer
-  const { subtype, embed } = element;
-  if (!embed) {
-    return null;  // Nothing to render if no embed data present
-  }
+  const embed = element?.embed;
+  if (!embed || !embed.url) return null;
 
-  // (Optional) If there are multiple custom embed subtypes, you could switch on subtype:
-  // if(subtype !== 'shorthand-embed') return null;
-
-  // Extract the fields from embed data
-  const { url: storyUrl, config } = embed;
-  const buttonText = config?.buttonText || 'Découvrir le contenu';
-  const buttonColor = config?.buttonColor || '#0055FF';
-  const textColor = config?.textColor || '#FFFFFF';
-
-  // Inline styles for the button using the config values
-  const buttonStyle = {
-    fontFamily: "'Red Hat Display', sans-serif",
-    fontSize: '1.125rem',
-    fontWeight: 400,
-    backgroundColor: buttonColor,
-    color: textColor,
-    padding: '10px 20px',
-    borderRadius: '4px',
-    textDecoration: 'none',
-    textAlign: 'center',
-    display: 'inline-block'
-  };
+  const {
+    url,
+    config: {
+      button_text = "Découvrir le contenu",
+      background_color = "#D51D2C",
+      text_color = "#FFFFFF"
+    } = {}
+  } = embed;
 
   return (
-    <div className="shorthand-embed" style={{ textAlign: 'center', margin: '20px 0' }}>
-      <a href={storyUrl} target="_blank" rel="noopener noreferrer"
-         style={buttonStyle}>
-        {buttonText}
+    <div style={{ textAlign: "center", margin: "2rem 0" }}>
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: "inline-block",
+          padding: "16px 32px",
+          backgroundColor: background_color,
+          color: text_color,
+          fontFamily: "'Red Hat Display', sans-serif",
+          textDecoration: "none",
+          borderRadius: "8px",
+          fontSize: "18px",
+          fontWeight: "bold"
+        }}
+      >
+        {button_text}
       </a>
     </div>
   );
 };
 
 export default CustomEmbedBody;
-

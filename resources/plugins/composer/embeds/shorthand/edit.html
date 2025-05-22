@@ -111,8 +111,18 @@
     window.addEventListener("DOMContentLoaded", () => {
       const { p } = parseQueryString();
       console.log("🔍 Paramètre reçu dans `p` :", p);
-      if (p && p.embed) fetchData(p);
-      else console.warn("⚠️ Aucun champ `embed` trouvé dans p.");
+
+      if (p && (p.embed || (p.type === "custom_embed" && p.url))) {
+        fetchData({
+          embed: p.embed ? p.embed : {
+            id: "shorthand-index.html",
+            url: p.url,
+            config: p.config || {}
+          }
+        });
+      } else {
+        console.warn("⚠️ Aucun champ `embed` trouvé dans p.");
+      }
 
       syncColorInputs(document.getElementById("bgColor"), document.getElementById("bgColorHex"));
       syncColorInputs(document.getElementById("textColor"), document.getElementById("textColorHex"));
